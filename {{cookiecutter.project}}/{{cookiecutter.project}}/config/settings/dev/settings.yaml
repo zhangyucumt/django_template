@@ -1,0 +1,13 @@
+ENV: dev
+
+DATABASES:
+  default:
+    ENGINE: django.db.backends.mysql
+    NAME: {{cookiecutter.project}}
+    USER: root
+    PASSWORD:
+    HOST: 127.0.0.1
+    PORT: 3306
+
+
+CELERY_BROKER_URL: redis://localhost:6379/0
