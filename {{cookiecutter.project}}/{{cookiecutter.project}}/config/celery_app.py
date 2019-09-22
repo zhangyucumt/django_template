@@ -14,3 +14,14 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
+
+
+@app.task(bind=True, name='test.name')
+def test(self, x, y):
+    import logging
+    logger = logging.getLogger(__name__)
+
+    logger.info("gogoggo")
+
+    print(self.request.id)
+    return x + y

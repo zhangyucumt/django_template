@@ -3,7 +3,8 @@ FROM python-37-centos7:2
 ENV LOG_LEVEL info
 ENV APP_ENV dev
 ENV MODE api
-ENV QUEUE default,action
+ENV QUEUE {{cookiecutter.project}}
+ENV DJANGO_SETTINGS_MODULE {{cookiecutter.project}}.config.settings
 
 ADD requirements.txt /usr/src/{{cookiecutter.project}}/
 WORKDIR /usr/src/{{cookiecutter.project}}/

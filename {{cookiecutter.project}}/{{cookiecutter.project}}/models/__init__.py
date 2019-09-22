@@ -18,11 +18,11 @@ OneToOneField = partial(models.OneToOneField, db_constraint=False)
 ManyToManyField = partial(models.ManyToManyField, db_constraint=False)
 
 
-class PasswordField(models.CharField):
+class SecretField(models.CharField):
     def to_python(self, value):
-        value = super(PasswordField, self).to_python(value)
+        value = super(SecretField, self).to_python(value)
         return SimpleAesEncryption().decrypt(value)
 
     def get_prep_value(self, value):
-        value = super(PasswordField, self).get_prep_value(value)
+        value = super(SecretField, self).get_prep_value(value)
         return SimpleAesEncryption().encrypt(value)

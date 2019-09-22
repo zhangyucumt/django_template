@@ -1,7 +1,6 @@
 import sys
-import logging.config
 
-logging_config = {
+LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
@@ -10,6 +9,10 @@ logging_config = {
         }
     },
     'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
         'default': {
             'class': 'logging.StreamHandler',
             'level': 'DEBUG',
@@ -19,13 +22,18 @@ logging_config = {
     },
     'loggers': {
         '': {
-            "level": "DEBUG",
+            "level": "INFO",
             "handlers": ['default'],
             "propagate": False
-        }
+        },
+        'django': {
+            'handlers': ['null'],
+            'level': 'INFO',
+            'propagate': False,
+        },
     }
 }
 
-logging.config.dictConfig(logging_config)
+
 
 

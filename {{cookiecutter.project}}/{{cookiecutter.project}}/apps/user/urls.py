@@ -6,5 +6,5 @@ router = routers.SimpleRouter()
 router.register(r'users', views.UserViewSet)
 
 urlpatterns = [
-    url(r'^api/', include(router.urls))
+    url(r'^api/v1/', include((router.urls, "user"), namespace='v1'))
 ]

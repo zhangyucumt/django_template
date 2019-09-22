@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from rest_framework_swagger.views import get_swagger_view
+from rest_framework.schemas import get_schema_view
 
 schema_view = get_swagger_view(title='API DOC')
 
@@ -24,4 +25,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('apidocs/', schema_view),
     path('user/', include('{{cookiecutter.project}}.apps.user.urls')),
+    path('openapi/', get_schema_view(
+        title="Your Project",
+        description="API for all things …"
+    ), name='openapi-schema'),
 ]

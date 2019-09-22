@@ -104,7 +104,10 @@ class LoggingMiddleware(MiddlewareMixin):
         elif http_method.lower() == 'get':
             log_meta['response'] = ''
         else:
-            log_meta['response'] = response.content.decode('utf-8')
+            if response['Content-Type'].lower() == 'application/json':
+                log_meta['response'] = response.content.decode('unicode-escape', errors='ignore')
+            else:
+                log_meta['response'] = ""
         try:
             return logger_fmt.format(**log_meta)
         except:
