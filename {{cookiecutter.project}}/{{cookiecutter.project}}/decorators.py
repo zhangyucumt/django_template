@@ -4,10 +4,12 @@ from rest_framework.serializers import BaseSerializer
 from {{cookiecutter.project}}.exception import raise_system_error
 
 
-def parse_request_with(parser_cls):
+def parse_request_with(parser_cls, partial=False, with_instance=False):
     """
     验证request.data 的参数
     :param parser_cls:
+    :param partial: 是否部分
+    :param with_instance: 是否有实例对象
     :return:
     """
     def deco(func):
@@ -17,11 +19,13 @@ def parse_request_with(parser_cls):
         def wrapper(cls, request, *args, **kwargs):
             if not issubclass(parser_cls, BaseSerializer):
                 raise_system_error('invalid request parser')
-
-            serializer = parser_cls(data=request.data)
+            if not with_instance:
+                serializer = parser_cls(data=request.data, context={'request': request}, partial=partial)
+            else:
+                instance = cls.get_object()
+                serializer = parser_cls(instance=instance, data=request.data, context={'request': request}, partial=partial)
             serializer.is_valid(raise_exception=True)
-            kwargs.update(serializer.data)
-            return func(cls, request, *args, **kwargs)
+            return func(cls, request, *args, validate_data=serializer.validated_data, serializer=serializer, **kwargs)
 
         return wrapper
 
