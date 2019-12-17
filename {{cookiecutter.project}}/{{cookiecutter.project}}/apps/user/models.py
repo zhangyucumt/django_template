@@ -16,6 +16,9 @@ class Profile(BaseModel):
     province = models.CharField(max_length=50, blank=True, verbose_name="省份")
     city = models.CharField(max_length=50, blank=True, verbose_name="城市")
     birthday = models.DateField(null=True, blank=True, verbose_name="生日")
+    
+    def __str__(self):
+        return "%s-%s-%s" % (self.user.username, self.real_name, self.user.id)
 
 
 @receiver(post_save, sender=get_user_model())
