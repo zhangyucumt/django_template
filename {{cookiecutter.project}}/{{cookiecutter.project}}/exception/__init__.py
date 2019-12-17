@@ -177,7 +177,7 @@ def raise_system_error(message):
     )
 
 
-def raise_invalid_param(code=None, message=None):
+def raise_invalid_param(message=None, code=None):
     code = code or ErrorCode.PARAM_CHECK_FAILED
     message = message or CODE_TRANSLATIONS.get(code, None)
     raise ValidationError(
