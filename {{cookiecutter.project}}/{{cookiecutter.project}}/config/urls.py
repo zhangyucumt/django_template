@@ -22,11 +22,12 @@ from rest_framework.schemas import get_schema_view
 schema_view = get_swagger_view(title='API DOC')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('apidocs/', schema_view),
-    path('user/', include('{{cookiecutter.project}}.apps.user.urls')),
-    path('openapi/', get_schema_view(
+    path(r'admin/', admin.site.urls),
+    path(r'apidocs/', schema_view),
+    path(r'user/', include('{{cookiecutter.project}}.apps.user.urls')),
+    path(r'openapi/', get_schema_view(
         title="Your Project",
         description="API for all things …"
     ), name='openapi-schema'),
+    path(r'api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
