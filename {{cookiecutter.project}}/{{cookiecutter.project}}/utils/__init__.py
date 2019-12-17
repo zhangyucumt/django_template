@@ -46,3 +46,10 @@ class JsonEncoder(json.JSONEncoder):
             return float(obj)
         else:
             return json.JSONEncoder.default(self, obj)
+
+
+def partial_update_instance(instance, update_dict):
+    for key, val in update_dict.items():
+        if hasattr(instance, key):
+            setattr(instance, key, val)
+    return True
