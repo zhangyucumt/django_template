@@ -15,7 +15,7 @@ class CustomerSchema(AutoSchema):
         method_name = getattr(view, 'action', method.lower())
         parser_serializer = getattr(getattr(view, method_name), "_parser_serializer", None)
 
-        if method not in ('PUT', 'PATCH', 'POST'):
+        if method not in ('PUT', 'PATCH', 'POST', 'DELETE'):
             return []
 
         if parser_serializer and isinstance(parser_serializer, serializers.Serializer):
