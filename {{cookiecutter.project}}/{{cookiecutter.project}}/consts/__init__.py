@@ -1,11 +1,12 @@
 class EnumObject(object):
+    __transaction__ = dict()
 
     @classmethod
     def choices(cls):
         choices = []
         for k, v in cls.__dict__.items():
             if not k.startswith('__'):
-                choices.append([v, k])
+                choices.append([v, cls.__transaction__[k]])
         return choices
 
     @classmethod
@@ -23,4 +24,3 @@ class EnumObject(object):
             if not k.startswith('__'):
                 data[v] = k
         return data
-
