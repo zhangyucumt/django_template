@@ -63,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     '{{cookiecutter.project}}.middleware.logging.LoggingMiddleware',
+    '{{cookiecutter.project}}.middleware.disable_csrf.DisableCSRFMiddleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
