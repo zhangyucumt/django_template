@@ -1,5 +1,7 @@
 import logging
 from django.http.response import Http404
+from django.core.exceptions import PermissionDenied
+
 from rest_framework import exceptions
 from rest_framework.views import exception_handler as _exception_handler
 
@@ -9,19 +11,19 @@ logger = logging.getLogger('{{cookiecutter.project}}.middleware.logging')
 
 
 def exception_handler(exc, context):
-
     if isinstance(exc, customer_exception.BaseApiException):
         return exc.to_response()
 
     HandleClass = None
     detail = None
+    # [rest framework]
     if isinstance(exc, exceptions.AuthenticationFailed):
         HandleClass = HandleClass or customer_exception.AuthenticationFailed
 
     if isinstance(exc, exceptions.NotAuthenticated):
         HandleClass = HandleClass or customer_exception.NotAuthenticated
 
-    if isinstance(exc, exceptions.PermissionDenied):
+    if isinstance(exc, (exceptions.PermissionDenied, PermissionDenied)):
         HandleClass = HandleClass or customer_exception.PermissionDenied
 
     if isinstance(exc, exceptions.MethodNotAllowed):
@@ -45,12 +47,10 @@ def exception_handler(exc, context):
     if isinstance(exc, exceptions.ParseError):
         HandleClass = HandleClass or customer_exception.ParseError
 
-    if isinstance(exc, exceptions.NotFound):
+    if isinstance(exc, (exceptions.NotFound, Http404)):
         HandleClass = HandleClass or customer_exception.NotFound
 
-    if isinstance(exc, Http404):
-        HandleClass = HandleClass or customer_exception.PageNotFound
-
+    # [未捕获的]
     if isinstance(exc, exceptions.APIException) and not HandleClass:
         HandleClass = HandleClass or customer_exception.APIException
         detail = detail or exc.detail
@@ -65,4 +65,3 @@ def exception_handler(exc, context):
     else:
         logger.debug('未处理的异常 - %s %s' % (exc, context))
         return _exception_handler(exc, context)
-

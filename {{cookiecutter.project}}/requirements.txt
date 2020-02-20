@@ -1,4 +1,4 @@
-Django==2.2.8
+Django==2.2.10
 django-model-utils==3.2.0
 django-redis==4.10.0  # https://github.com/niwinz/django-redis
 djangorestframework==3.9.4  # https://github.com/encode/django-rest-framework
@@ -7,6 +7,7 @@ django-celery-beat==1.5.0  # https://github.com/celery/django-celery-beat
 django-celery-results==1.1.2
 django-rest-swagger==2.2.0
 django-filter==2.2.0
+django-oauth-toolkit==1.2.0
 
 pytz==2019.1
 PyYAML==5.1.1
@@ -20,5 +21,6 @@ ConcurrentLogHandler==0.9.1
 gunicorn==19.9.0
 kombu==4.6.3
 coreapi==2.3.3
-
+Pillow==6.2.1
+openpyxl==3.0.2
 

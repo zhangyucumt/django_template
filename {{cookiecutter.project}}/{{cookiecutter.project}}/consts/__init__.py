@@ -24,3 +24,4 @@ class EnumObject(object):
             if not k.startswith('__'):
                 data[v] = k
         return data
+

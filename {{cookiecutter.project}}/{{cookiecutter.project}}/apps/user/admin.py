@@ -1,24 +1,10 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model, models as auth_models
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from {{cookiecutter.project}}.apps.user import models
+admin.site.unregister(auth_models.Group)
 
 
-@admin.register(models.Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'username', 'email', 'nickname')
-
-    def user_id(self, obj):
-        return obj.user.id
-
-    def username(self, obj):
-        return obj.user.username
-
-    def email(self, obj):
-        return obj.user.email
-
-@admin.register(models.UserOpenid)
-class UserOpenidAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'openid_type', 'openid_id')
-
-    def user_id(self, obj):
-        return obj.user.id
+@admin.register(get_user_model())
+class UserAdmin(BaseUserAdmin):
+    pass

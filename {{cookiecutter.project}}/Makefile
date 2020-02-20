@@ -1,5 +1,5 @@
 pylint:
-	flake8 genji --max-line-length=120 --exclude=genji/rpc/zmop,libs
+	flake8 {{cookiecutter.project}} --max-line-length=120
 
 pytest:
 	pytest unitest

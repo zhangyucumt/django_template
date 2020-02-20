@@ -45,6 +45,7 @@ THIRD_PARTY_APPS = [
     "django_celery_beat",
     "rest_framework_swagger",
     "django_filters",
+    # "oauth2_provider"
 ]
 
 LOCAL_APPS = [
@@ -55,8 +56,8 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -66,14 +67,27 @@ MIDDLEWARE = [
     '{{cookiecutter.project}}.middleware.disable_csrf.DisableCSRFMiddleware',
 ]
 
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+    'VIEW',
+)
 CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = '{{cookiecutter.project}}.config.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            "{{cookiecutter.project}}/templates"
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -106,11 +120,28 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# [email]
+# 发送邮件参数
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mxhichina.com'
+EMAIL_USE_SSL = True  # ssl方式连接
+EMAIL_PORT = 465
+# 发送邮件的邮箱账号
+EMAIL_HOST_USER = 'mail@example.com'
+# 在邮箱中设置的客户端授权密码或者密码
+EMAIL_HOST_PASSWORD = 'password'
+# 收件人看到的发件人
+EMAIL_FROM = 'service<mail@example.com>'
+
+
 REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
     ),
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -127,7 +158,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': '{{cookiecutter.project}}.paginations.PageNumberPagination',
     'PAGE_SIZE': 20,
-    'UNICODE_JSON': False,
+    'UNICODE_JSON': True,
     'COERCE_DECIMAL_TO_STRING': False,
     'EXCEPTION_HANDLER': '{{cookiecutter.project}}.exception.handler.exception_handler',
     'DEFAULT_THROTTLE_CLASSES': (
@@ -144,6 +175,8 @@ REST_FRAMEWORK = {
 SWAGGER_SETTINGS = {
     'is_authenticated': True
 }
+
+AUTH_USER_MODEL = "user.User"
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -165,10 +198,26 @@ DATETIME_FORMAT = 'Y-m-d H:i:s'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/site_static/'
+
+MEDIA_URL = '/media/'
 
 LOGIN_URL = 'rest_framework:login'
 LOGOUT_URL = 'rest_framework:logout'
+
+SESSION_COOKIE_SAMESITE = None
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'cache',
+    }
+}
+
+# [oauth2]
+OAUTH2_PROVIDER = {
+    "AUTHORIZATION_CODE_EXPIRE_SECONDS": 300,
+}
 
 # [celery]
 CELERY_TIMEZONE = TIME_ZONE

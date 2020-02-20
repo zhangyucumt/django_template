@@ -1,39 +1,20 @@
 from django.db import models
-from django.dispatch import receiver
-from django.db.models.signals import post_save
-from django.contrib.auth import get_user_model
-from {{cookiecutter.project}}.consts.user import Sex, OpenidType
-from {{cookiecutter.project}}.models import BaseModel, OneToOneField, ForeignKey
+from django.contrib.auth.models import AbstractUser
+from {{cookiecutter.project}}.consts.user import Sex
 
 
-class Profile(BaseModel):
-    user = OneToOneField(get_user_model(), on_delete=models.CASCADE)
-    nickname = models.CharField(max_length=50, blank=True, verbose_name="昵称")
-    mobile = models.CharField(max_length=15, verbose_name="手机号", blank=True)
-    real_name = models.CharField(max_length=150, blank=True, verbose_name="真实姓名")
+class User(AbstractUser):
+    username = models.CharField("账号", max_length=254, unique=True, error_messages={'unique': "用户名已存在"})
+    email = models.EmailField(verbose_name="电子邮箱", blank=False, unique=True)
+    phone = models.CharField(max_length=11, verbose_name="手机号", blank=False, unique=True)
+    name = models.CharField(max_length=150, verbose_name="用户名")
+    is_staff = models.BooleanField("管理员", default=False, help_text="是否可以登录管理站点")
     sex = models.IntegerField(choices=Sex.choices(), default=Sex.unknown, verbose_name="性别")
-    country = models.CharField(max_length=50, blank=True, verbose_name="国家")
-    province = models.CharField(max_length=50, blank=True, verbose_name="省份")
-    city = models.CharField(max_length=50, blank=True, verbose_name="城市")
-    birthday = models.DateField(null=True, blank=True, verbose_name="生日")
-    
+    avatar = models.ImageField(upload_to="user/avatars", null=True, blank=True, max_length=100, verbose_name="头像")
+
     def __str__(self):
-        return "%s-%s-%s" % (self.user.username, self.real_name, self.user.id)
-
-
-@receiver(post_save, sender=get_user_model())
-def save_profile(sender, **kwargs):
-    if kwargs['created']:
-        profile = Profile()
-        profile.user = kwargs['instance']
-        profile.save()
-
-
-class UserOpenid(BaseModel):
-    user = ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    openid_id = models.CharField(max_length=512, verbose_name="OpenID")
-    openid_type = models.IntegerField(choices=OpenidType.choices(), verbose_name="openid类型")
-    is_valid = models.BooleanField(default=True, verbose_name="软删除标志")
+        return self.username
 
     class Meta:
-        unique_together = (('openid_type', 'openid_id'), )
+        verbose_name = "用户"
+        verbose_name_plural = verbose_name

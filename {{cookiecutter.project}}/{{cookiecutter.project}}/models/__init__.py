@@ -1,4 +1,6 @@
 from functools import partial
+import json
+
 from django.db import models
 from {{cookiecutter.project}}.utils import SimpleAesEncryption
 
@@ -15,7 +17,6 @@ class BaseModel(models.Model):
 
 ForeignKey = partial(models.ForeignKey, db_constraint=False)
 OneToOneField = partial(models.OneToOneField, db_constraint=False)
-ManyToManyField = partial(models.ManyToManyField, db_constraint=False)
 
 
 class SecretField(models.CharField):
@@ -26,3 +27,20 @@ class SecretField(models.CharField):
     def get_prep_value(self, value):
         value = super(SecretField, self).get_prep_value(value)
         return SimpleAesEncryption().encrypt(value)
+
+
+class ListField(models.CharField):
+
+    def from_db_value(self, value, expression, connection):
+        return self.to_python(value)
+
+    def to_python(self, value):
+        if value is None:
+            return []
+        try:
+            return json.loads(value)
+        except Exception:
+            return []
+
+    def get_prep_value(self, value):
+        return json.dumps(value)

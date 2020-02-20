@@ -1,4 +1,6 @@
-from athena.consts import EnumObject
+from collections import namedtuple
+
+from {{cookiecutter.project}}.consts import EnumObject
 
 
 class Sex(EnumObject):

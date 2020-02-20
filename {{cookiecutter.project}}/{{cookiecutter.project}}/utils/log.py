@@ -13,11 +13,15 @@ class RedStarLogFormatter(Formatter):
 
     def format(self, record):
         request = get_current_request()
-        if hasattr(record, "msg") and 'request_id:' not in record.msg and request:
-            record.msg = 'request_id: {} {}'.format(
-                getattr(request, 'request_id', ''),
-                record.msg
-            )
+        if hasattr(record, "msg") and request:
+            request_id = getattr(request, 'request_id', '')
+            if request_id and request_id not in record.msg:
+                user_id = getattr(getattr(request, "user", object), "id", "") or "NULL"
+                record.msg = 'request_id:{} user_id:{} {}'.format(
+                    request_id,
+                    user_id,
+                    record.msg
+                )
         return super(RedStarLogFormatter, self).format(record)
 
 

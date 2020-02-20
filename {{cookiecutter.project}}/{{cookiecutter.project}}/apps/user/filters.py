@@ -10,12 +10,6 @@ class UserFilter(filters.FilterSet):
 
     class Meta:
         model = get_user_model()
-        # fields = ('username', 'profile__user_id')
         fields = {
             'id': ['lt', 'gt']
         }
-
-    # @property
-    # def qs(self):
-    #     parent = super(UserFilter, self).qs
-    #     return parent.filter(id=2)

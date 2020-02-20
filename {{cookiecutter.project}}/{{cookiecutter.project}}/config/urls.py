@@ -15,19 +15,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
 
-from rest_framework_swagger.views import get_swagger_view
-from rest_framework.schemas import get_schema_view
 
-schema_view = get_swagger_view(title='API DOC')
+admin.site.site_title = '后台管理系统'
+admin.site.site_header = '后台管理系统'
+admin.site.index_title = '后台管理系统'
+
 
 urlpatterns = [
     path(r'admin/', admin.site.urls),
-    path(r'apidocs/', schema_view),
     path(r'user/', include('{{cookiecutter.project}}.apps.user.urls')),
-    path(r'openapi/', get_schema_view(
-        title="Your Project",
-        description="API for all things …"
-    ), name='openapi-schema'),
     path(r'api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    # path(r'oauth/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]
+
+
+if settings.DEBUG:
+    from rest_framework_swagger.views import get_swagger_view
+    schema_view = get_swagger_view(title='API DOC')
+    urlpatterns.append(path(r'apidocs/', schema_view))

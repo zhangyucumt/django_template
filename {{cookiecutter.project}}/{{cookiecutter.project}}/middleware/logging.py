@@ -39,8 +39,9 @@ class LoggingMiddleware(MiddlewareMixin):
         self._initial_http_body = request.body
 
     def process_exception(self, request, exc_info):
-        from {{cookiecutter.project}}.exception import APIException
-        response = JsonResponse(APIException().to_dict(), status=500)
+        from {{cookiecutter.project}}.exception.handler import exception_handler
+        raw_response = exception_handler(exc_info, str(exc_info))
+        response = JsonResponse(raw_response.data, status=raw_response.status_code)
         self.log_data(request, response, exc_info)
         return response
 
@@ -105,7 +106,10 @@ class LoggingMiddleware(MiddlewareMixin):
             log_meta['response'] = ''
         else:
             if response['Content-Type'].lower() == 'application/json':
-                log_meta['response'] = response.content.decode('unicode-escape', errors='ignore')
+                try:
+                    log_meta['response'] = response.content.decode('utf-8', errors='ignore')
+                except Exception:
+                    log_meta['response'] = ""
             else:
                 log_meta['response'] = ""
         try:

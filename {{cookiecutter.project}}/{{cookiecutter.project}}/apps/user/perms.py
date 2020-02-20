@@ -1,13 +1,11 @@
 from rest_framework.permissions import BasePermission
 
 
-class MyPermission(BasePermission):
-    message = 'Adding Customer not allowed'
+class UserViewPermission(BasePermission):
 
-    # def has_permission(self, request, view):
-    #     print(dir(view))
-    #     print(view.name)
-    #     return False
+    def has_permission(self, request, view):
+        if view.action in ('login', 'logout'):
+            return True
+        else:
+            return request.user and request.user.is_authenticated
 
-    # def has_object_permission(self, request, view, obj):
-    #     return False

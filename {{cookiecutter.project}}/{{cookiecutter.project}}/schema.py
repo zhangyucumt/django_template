@@ -61,3 +61,30 @@ class CustomerSchema(AutoSchema):
             return False
 
         return method.lower() in ["get", "put", "patch", "delete"]
+
+    # def get_encoding(self, path, method):
+    #     """
+    #     Return the 'encoding' parameter to use for a given endpoint.
+    #     """
+    #     view = self.view
+    #
+    #     # Core API supports the following request encodings over HTTP...
+    #     supported_media_types = {
+    #         'application/json',
+    #         'application/x-www-form-urlencoded',
+    #         'multipart/form-data',
+    #     }
+    #     parser_classes = getattr(view, 'parser_classes', [])
+    #     media_types = [getattr(parser_class, 'media_type', None) for parser_class in parser_classes]
+    #
+    #     if 'multipart/form-data' in media_types:
+    #         return 'multipart/form-data'
+    #
+    #     for parser_class in parser_classes:
+    #         media_type = getattr(parser_class, 'media_type', None)
+    #         if media_type in supported_media_types:
+    #             return media_type
+    #         # Raw binary uploads are supported with "application/octet-stream"
+    #         if media_type == '*/*':
+    #             return 'application/octet-stream'
+    #     return None

@@ -15,12 +15,15 @@ class ErrorCode(object):
     UNSUPPORTED_MEDIA_TYPE = 10008
     THROTTLED = 10009
     PAGE_NOT_FOUND = 10010
+    NOT_CONFIG = 10011
 
     USER_NOT_EXIST = 20001
     PASSWORD_WRONG = 20002
     AUTH_FAILED = 20003
     NEED_LOGIN = 20004
     PERMISSION_DENIED = 20005
+
+    OAUTH_ERROR = 20100
 
 
 CODE_TRANSLATIONS = {
@@ -35,13 +38,14 @@ CODE_TRANSLATIONS = {
     ErrorCode.UNSUPPORTED_MEDIA_TYPE: "无法处理该媒体类型",
     ErrorCode.THROTTLED: "请求速度太快，请销后再试",
     ErrorCode.PAGE_NOT_FOUND: "请求地址不存在",
+    ErrorCode.NOT_CONFIG: "配置不存在",
 
     ErrorCode.USER_NOT_EXIST: '该用户不存在',
     ErrorCode.PASSWORD_WRONG: '密码错误',
     ErrorCode.AUTH_FAILED: '用户名或者密码不正确',
     ErrorCode.NEED_LOGIN: '您未登录',
-    ErrorCode.PERMISSION_DENIED: '权限不足'
-
+    ErrorCode.PERMISSION_DENIED: '权限不足',
+    ErrorCode.OAUTH_ERROR: 'Oauth处理异常'
 }
 
 
@@ -192,3 +196,7 @@ def raise_need_login():
 
 def raise_permission_denied():
     raise PermissionDenied()
+
+
+if __name__ == '__main__':
+    print(CODE_TRANSLATIONS)

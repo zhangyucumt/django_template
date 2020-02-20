@@ -1,9 +1,14 @@
+import os
+import re
+from collections import defaultdict
 from django.conf import settings
 from Crypto.Cipher import AES
 import base64
 import json
 from datetime import datetime, date
 from decimal import Decimal
+from uuid import uuid4
+import random
 
 
 def update_config_recursively(old_data, new_data):
@@ -53,3 +58,42 @@ def partial_update_instance(instance, update_dict):
         if hasattr(instance, key):
             setattr(instance, key, val)
     return True
+
+
+def upload_file_with_raw_name(instance, filename, base_path):
+    return os.path.join(base_path, uuid4().hex, filename)
+
+
+def list_index_by(revert_list, key):
+    """
+    将字典组成的列表转化成按照字典中的某个字段的值为key的字典
+    :param revert_list: etc. [{"color": "red", "sex": "male", "c": 3}, {"color": "black", "sex": "female", "c": 2}, ]
+    :param key: "color"
+    :return: {"red": {"color": "red", "sex": "male", "c": 3}, "black": {"color": "black", "sex": "female", "c": 2}}
+    """
+    return {c_dict[key]: c_dict for c_dict in revert_list}
+
+
+def list_index_by_list_return(revert_list, key):
+    """
+    将字典组成的列表转化成按照字典中的某个字段的值为key的字典
+    :param revert_list: etc. [{"color": "red", "sex": "male", "c": 3}, {"color": "black", "sex": "female", "c": 2}, ]
+    :param key: "color"
+    :return: {"red": [{"color": "red", "sex": "male", "c": 3}], "black": [{"color": "black", "sex": "female", "c": 2}]}
+    """
+    ret = defaultdict(list)
+    for c_dict in revert_list:
+        ret[c_dict[key]].append(c_dict)
+    return ret
+
+
+def gen_random_num_code(length=4):
+    return random.choice(range(int("1" + "0" * (length - 1)), int("9" * length)))
+
+
+def is_chinese(uchar):
+    """判断一个unicode是否是汉字"""
+    if uchar >= u'\u4e00' and uchar <= u'\u9fa5':
+        return True
+    else:
+        return False

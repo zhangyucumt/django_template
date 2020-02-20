@@ -14,7 +14,7 @@ echo queue=${QUEUE}
 export cpus_num=`cat /proc/cpuinfo | grep "processor" |wc -l`
 
 if [ "${mode}" == "api" ]; then
-    gunicorn {{cookiecutter.project}}.config.wsgi \
+    exec gunicorn {{cookiecutter.project}}.config.wsgi \
         -b 0.0.0.0:{{cookiecutter.port}} \
         -w $((${cpus_num}*2+1)) \
         -t 50 \
@@ -23,10 +23,10 @@ if [ "${mode}" == "api" ]; then
         --keep-alive 30
 
 elif [ "${mode}" == "worker" ]; then
-    celery -A {{cookiecutter.project}}.config.celery_app worker \
+    exec celery -A {{cookiecutter.project}}.config.celery_app worker \
         -Q ${queue} \
         -l ${log_level} \
         --concurrency $((${cpus_num}*2+1))
 elif [ "${mode}" == "beat" ]; then
-    celery -A {{cookiecutter.project}}.config.celery_app beat -l ${log_level}
+    exec celery -A {{cookiecutter.project}}.config.celery_app beat -l ${log_level}
 fi

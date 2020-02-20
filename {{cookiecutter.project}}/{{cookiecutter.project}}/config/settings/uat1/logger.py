@@ -1,5 +1,4 @@
 import os
-from django.conf import settings
 
 LOGGING = {
     'version': 1,
@@ -19,7 +18,7 @@ LOGGING = {
         },
         'api_info': {
             'class': 'cloghandler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join(settings.BASE_DIR, 'logs', 'api_info.log'),
+            'filename': os.path.join('/logs', 'api_info.log'),
             'level': 'DEBUG',
             'formatter': 'lineFormat',
             'delay': True,
@@ -28,7 +27,7 @@ LOGGING = {
         },
         'api_error': {
             'class': 'cloghandler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join(settings.BASE_DIR, 'logs', 'api_warning.log'),
+            'filename': os.path.join('/logs', 'api_warning.log'),
             'level': 'ERROR',
             'formatter': 'lineFormat',
             'delay': True,
@@ -37,7 +36,7 @@ LOGGING = {
         },
         'rpc': {
             'class': 'cloghandler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join(settings.BASE_DIR, 'logs', 'rpc.log'),
+            'filename': os.path.join('/logs', 'rpc.log'),
             'level': 'INFO',
             'formatter': 'lineFormat',
             'delay': True,
@@ -46,7 +45,7 @@ LOGGING = {
         },
         'message': {
             'class': 'cloghandler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join(settings.BASE_DIR, 'logs', 'message.log'),
+            'filename': os.path.join('/logs', 'message.log'),
             'level': 'INFO',
             'formatter': 'lineFormat',
             'delay': True,
@@ -55,7 +54,7 @@ LOGGING = {
         },
         'default': {
             'class': 'cloghandler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join(settings.BASE_DIR, 'logs', 'api_info.log'),
+            'filename': os.path.join('/logs', 'api_info.log'),
             'level': 'INFO',
             'formatter': 'lineFormat',
             'delay': True,

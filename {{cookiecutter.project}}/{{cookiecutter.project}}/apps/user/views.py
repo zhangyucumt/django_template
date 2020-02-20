@@ -1,64 +1,56 @@
 import logging
 
-from django.contrib.auth import get_user_model
-from django_filters import rest_framework as filters
-
-from rest_framework.viewsets import ModelViewSet, ViewSet, GenericViewSet
-from rest_framework.generics import GenericAPIView
-from rest_framework.exceptions import APIException
+from django.contrib.auth import get_user_model, authenticate, login, logout
+from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.reverse import reverse
 
-from {{cookiecutter.project}}.apps.user.models import Profile
-from {{cookiecutter.project}}.apps.user import serializers
-from {{cookiecutter.project}}.apps.user.perms import MyPermission
-from {{cookiecutter.project}}.exception import raise_invalid_param, BaseApiException, ValidationError, ErrorCode
-from {{cookiecutter.project}}.apps.user.filters import UserFilter
-from {{cookiecutter.project}}.decorators import parse_request_with, allows_filters
+from {{cookiecutter.project}}.apps.user import serializers, perms, handler
+from {{cookiecutter.project}}.exception import ValidationError, AuthenticationFailed
+
+from {{cookiecutter.project}}.decorators import parse_request_with
+
 
 logger = logging.getLogger(__name__)
 
 
-class UserViewSet(ModelViewSet):
+class UserViewSet(GenericViewSet):
     serializer_class = serializers.UserModelSerializer
-    # permission_classes = [IsAuthenticated, ]
-    queryset = get_user_model().objects.all()
-    filterset_class = UserFilter
-    search_fields = ('username', )
-    ordering = 'pk'
+    permission_classes = [perms.UserViewPermission, ]
+    queryset = get_user_model().objects.filter(is_active=True)
 
     @action(detail=False, methods=['POST'])
-    @parse_request_with(serializers.UserBaseSerializer)
-    def test(self, request, *args, **kwargs):
-        return Response(kwargs)
+    @parse_request_with(serializers.UserBaseLoginSerializer)
+    def login(self, request, *args, validate_data, **kwargs):
+        """登录"""
+        user = authenticate(username=validate_data['username'], password=validate_data['password'])
+        if user is not None:
+            login(request, user)
+            return Response(self.get_serializer(user, many=False).data)
+        else:
+            logout(request)
+            raise AuthenticationFailed()
 
-    @action(detail=False)
-    @allows_filters
-    def statistics(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @action(detail=True, methods=['post'], url_name='user_new')
-    def new(self, request, pk=None):
+    @action(detail=False, methods=['GET'])
+    def user_info(self, request, *args, **kwargs):
         """
-        aaa
-        :param request:
-        :param pk:
-        :return:
+        获取用户信息
+        ```json
+        {
+          "id": 4, # id
+          "username": "zhangsan", # 账号
+          "name": "haoda",        # 用户名
+          "phone": "17600719912", # 手机
+          "email": "zhangyucumt@foxmail.com",  # 邮箱
+          "avatar": "http://127.0.0.1:{{cookiecutter.port}}/media/user/avatars/%E4%B8%8B%E8%BD%BD_kyJzAAT.png"  # 头像
+        }
+        ```
         """
-        obj = self.get_object()
-        raise ValidationError
+        user = request.user
+        return Response(self.get_serializer(user, many=False).data)
 
-    @new.mapping.delete
-    def delete_new(self, request, pk=None):
-        raise_invalid_param()
-
+    @action(detail=False, methods=['POST'])
+    def logout(self, request, *args, **kwargs):
+        """退出登录"""
+        logout(request)
+        return Response({})
