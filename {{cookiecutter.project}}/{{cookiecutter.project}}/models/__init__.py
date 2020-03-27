@@ -1,5 +1,6 @@
 from functools import partial
 import json
+import ast
 
 from django.db import models
 from {{cookiecutter.project}}.utils import SimpleAesEncryption
@@ -38,9 +39,26 @@ class ListField(models.CharField):
         if value is None:
             return []
         try:
-            return json.loads(value)
+            return ast.literal_eval(value)
         except Exception:
             return []
+
+    def get_prep_value(self, value):
+        return json.dumps(value)
+
+
+class JsonField(models.CharField):
+
+    def from_db_value(self, value, expression, connection):
+        return self.to_python(value)
+
+    def to_python(self, value):
+        if value is None:
+            return {}
+        try:
+            return ast.literal_eval(value)
+        except Exception:
+            return {}
 
     def get_prep_value(self, value):
         return json.dumps(value)
