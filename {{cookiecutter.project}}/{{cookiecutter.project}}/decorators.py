@@ -1,4 +1,5 @@
 import functools
+import pickle
 
 from rest_framework.serializers import BaseSerializer
 from {{cookiecutter.project}}.exception import raise_system_error
