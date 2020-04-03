@@ -1,3 +1,4 @@
+import re
 import functools
 import pickle
 from django.core.cache import cache
@@ -14,6 +15,7 @@ def parse_request_with(parser_cls, partial=False, with_instance=False):
     :param with_instance: 是否有实例对象
     :return:
     """
+
     def deco(func):
         func._parser_serializer = parser_cls()  # 该属性为自定义属性 对应 schema中的 serializer_fields
 
@@ -45,6 +47,7 @@ def allows_filters(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -59,8 +62,8 @@ class memorize(dict):
         result = self[key] = self.func(*key)
         return result
 
- 
-def save_result_to_cache(key, expire):
+
+def save_result_to_cache(key, expire=None, cache_backend='default'):
     def deco(missing_func):
         @functools.wraps(missing_func)
         def wrapper(*args, **kwargs):
@@ -76,5 +79,7 @@ def save_result_to_cache(key, expire):
                 v = missing_func(*args, **kwargs)
                 current_cache.set(cache_key, pickle.dumps(v), expire)
                 return v
+
         return wrapper
+
     return deco
