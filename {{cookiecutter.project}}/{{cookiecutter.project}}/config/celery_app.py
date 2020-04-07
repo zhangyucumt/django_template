@@ -25,3 +25,11 @@ def test(self, x, y):
 
     print(self.request.id)
     return x + y
+
+@app.task(bind=True)
+def test_db_sleep_task(self):
+    from django.db import connections
+    with connections['default'].cursor() as cursor:
+        cursor.execute("select sleep(30)")
+        row = cursor.fetchone()
+    return {'result': 1}
