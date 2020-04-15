@@ -9,6 +9,16 @@ from datetime import datetime, date
 from decimal import Decimal
 from uuid import uuid4
 import random
+import importlib
+import pkgutil
+import inspect
+import time
+import arrow
+import hashlib
+
+from django.utils import six
+from django.conf import settings
+from django.utils import timezone
 
 
 def update_config_recursively(old_data, new_data):
@@ -97,3 +107,63 @@ def is_chinese(uchar):
         return True
     else:
         return False
+
+
+def obj_scanner(pkg, _filter, obj_type=inspect.isclass, depth=None):
+    """
+    :param pkg: a module instance or name of the module
+    :param _filter: a function to filter matching classes
+    :param obj_type: type in inspect
+    :param depth: depth to scanner in pkg
+    :return: all filtered obj
+    """
+
+    assert callable(obj_type) and obj_type.__module__ == 'inspect'
+
+    if isinstance(pkg, str):
+        pkg = importlib.import_module(pkg)
+
+    objs = set()
+    for importer, modname, ispkg in pkgutil.iter_modules(pkg.__path__):
+        module = importlib.import_module('.' + modname, pkg.__name__)
+        if ispkg:
+            if depth is not None and isinstance(depth, int):
+                depth -= 1
+                if depth > 0:
+                    objs |= obj_scanner(module, _filter, obj_type, depth)
+            else:
+                objs |= obj_scanner(module, _filter, obj_type, depth)
+        else:
+            obj_in_module = {
+                cls[1] for cls in inspect.getmembers(module, obj_type) if _filter(cls[1])  # noqa
+            }
+            objs.update(obj_in_module)
+    else:
+        obj_in_module = {
+            cls[1] for cls in inspect.getmembers(pkg, obj_type) if _filter(cls[1])  # noqa
+        }
+        objs.update(obj_in_module)
+    return objs
+
+
+def timestamp2datetime(timestamp):
+    if isinstance(timestamp, six.string_types):
+        if re.match(r'/^[\d]+$/', timestamp):
+            timestamp = int(timestamp)
+    elif not isinstance(timestamp, six.integer_types):
+        return None
+
+    if timestamp > 100000000000:
+        timestamp = int(timestamp / 1000)
+
+    return arrow.get(timestamp).to(settings.TIME_ZONE).datetime
+
+
+def simple_md5_sign(data, secret_key):
+    if not isinstance(data, dict) or not data:
+        raise ValueError("data must be json")
+
+    str_to_be_signed = "&".join(['='.join([str(k), str(v)]) for k, v in sorted(data.items())]) + "&key=" + secret_key
+
+    return hashlib.md5(str_to_be_signed.encode("utf-8")).hexdigest()
+

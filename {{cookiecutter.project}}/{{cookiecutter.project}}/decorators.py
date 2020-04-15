@@ -1,7 +1,7 @@
 import re
 import functools
 import pickle
-from django.core.cache import cache
+from django.core.cache import caches
 
 from rest_framework.serializers import BaseSerializer
 from {{cookiecutter.project}}.exception import raise_system_error
@@ -51,33 +51,20 @@ def allows_filters(func):
     return wrapper
 
 
-class memorize(dict):
-    def __init__(self, func):
-        self.func = func
-
-    def __call__(self, *args):
-        return self[args]
-
-    def __missing__(self, key):
-        result = self[key] = self.func(*key)
-        return result
-
-
-def save_result_to_cache(key, expire=None, cache_backend='default'):
+def save_result_to_cache(key, expire, cache_backend='default'):
     def deco(missing_func):
         @functools.wraps(missing_func)
         def wrapper(*args, **kwargs):
-
-            current_cache = cache[cache_backend]
             cache_key = key
             if re.search(r'{\w*}', key):
                 cache_key = key.format(*args, **kwargs)
-            cached_value = current_cache.get(cache_key)
+            cache = caches[cache_backend]
+            cached_value = cache.get(cache_key)
             if cached_value is not None:
                 return pickle.loads(cached_value)
             else:
                 v = missing_func(*args, **kwargs)
-                current_cache.set(cache_key, pickle.dumps(v), expire)
+                cache.set(cache_key, pickle.dumps(v), expire)
                 return v
 
         return wrapper
