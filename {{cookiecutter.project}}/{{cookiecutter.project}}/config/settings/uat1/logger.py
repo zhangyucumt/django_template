@@ -17,7 +17,7 @@ LOGGING = {
             'class': 'logging.NullHandler',
         },
         'api_info': {
-            'class': 'cloghandler.ConcurrentRotatingFileHandler',
+            'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
             'filename': os.path.join('/logs', 'api_info.log'),
             'level': 'DEBUG',
             'formatter': 'lineFormat',
@@ -26,7 +26,7 @@ LOGGING = {
             'backupCount': 1
         },
         'api_error': {
-            'class': 'cloghandler.ConcurrentRotatingFileHandler',
+            'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
             'filename': os.path.join('/logs', 'api_warning.log'),
             'level': 'ERROR',
             'formatter': 'lineFormat',
@@ -35,7 +35,7 @@ LOGGING = {
             'backupCount': 1
         },
         'rpc': {
-            'class': 'cloghandler.ConcurrentRotatingFileHandler',
+            'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
             'filename': os.path.join('/logs', 'rpc.log'),
             'level': 'INFO',
             'formatter': 'lineFormat',
@@ -44,7 +44,7 @@ LOGGING = {
             'backupCount': 1
         },
         'message': {
-            'class': 'cloghandler.ConcurrentRotatingFileHandler',
+            'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
             'filename': os.path.join('/logs', 'message.log'),
             'level': 'INFO',
             'formatter': 'lineFormat',
@@ -53,7 +53,7 @@ LOGGING = {
             'backupCount': 1
         },
         'default': {
-            'class': 'cloghandler.ConcurrentRotatingFileHandler',
+            'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
             'filename': os.path.join('/logs', 'api_info.log'),
             'level': 'INFO',
             'formatter': 'lineFormat',
