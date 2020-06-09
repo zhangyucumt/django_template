@@ -18,7 +18,7 @@ LOGGING = {
         },
         'api_info': {
             'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join('/logs', 'api_info.log'),
+            'filename': os.path.join('/logs/{{cookiecutter.project}}', 'api_info.log'),
             'level': 'DEBUG',
             'formatter': 'lineFormat',
             'delay': True,
@@ -27,7 +27,7 @@ LOGGING = {
         },
         'api_error': {
             'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join('/logs', 'api_warning.log'),
+            'filename': os.path.join('/logs/{{cookiecutter.project}}', 'api_warning.log'),
             'level': 'ERROR',
             'formatter': 'lineFormat',
             'delay': True,
@@ -36,7 +36,7 @@ LOGGING = {
         },
         'rpc': {
             'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join('/logs', 'rpc.log'),
+            'filename': os.path.join('/logs/{{cookiecutter.project}}', 'rpc.log'),
             'level': 'INFO',
             'formatter': 'lineFormat',
             'delay': True,
@@ -45,7 +45,7 @@ LOGGING = {
         },
         'message': {
             'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join('/logs', 'message.log'),
+            'filename': os.path.join('/logs/{{cookiecutter.project}}', 'message.log'),
             'level': 'INFO',
             'formatter': 'lineFormat',
             'delay': True,
@@ -54,7 +54,7 @@ LOGGING = {
         },
         'default': {
             'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join('/logs', 'api_info.log'),
+            'filename': os.path.join('/logs/{{cookiecutter.project}}', 'api_info.log'),
             'level': 'INFO',
             'formatter': 'lineFormat',
             'delay': True,
