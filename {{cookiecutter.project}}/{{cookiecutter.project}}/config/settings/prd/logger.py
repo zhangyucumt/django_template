@@ -17,8 +17,8 @@ LOGGING = {
             'class': 'logging.NullHandler',
         },
         'api_info': {
-            'class': 'cloghandler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join('/logs', 'api_info.log'),
+            'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
+            'filename': os.path.join('/logs/{{cookiecutter.project}}', 'api_info.log'),
             'level': 'DEBUG',
             'formatter': 'lineFormat',
             'delay': True,
@@ -26,8 +26,8 @@ LOGGING = {
             'backupCount': 1
         },
         'api_error': {
-            'class': 'cloghandler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join('/logs', 'api_warning.log'),
+            'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
+            'filename': os.path.join('/logs/{{cookiecutter.project}}', 'api_warning.log'),
             'level': 'ERROR',
             'formatter': 'lineFormat',
             'delay': True,
@@ -35,8 +35,8 @@ LOGGING = {
             'backupCount': 1
         },
         'rpc': {
-            'class': 'cloghandler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join('/logs', 'rpc.log'),
+            'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
+            'filename': os.path.join('/logs/{{cookiecutter.project}}', 'rpc.log'),
             'level': 'INFO',
             'formatter': 'lineFormat',
             'delay': True,
@@ -44,8 +44,8 @@ LOGGING = {
             'backupCount': 1
         },
         'message': {
-            'class': 'cloghandler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join('/logs', 'message.log'),
+            'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
+            'filename': os.path.join('/logs/{{cookiecutter.project}}', 'message.log'),
             'level': 'INFO',
             'formatter': 'lineFormat',
             'delay': True,
@@ -53,8 +53,8 @@ LOGGING = {
             'backupCount': 1
         },
         'default': {
-            'class': 'cloghandler.ConcurrentRotatingFileHandler',
-            'filename': os.path.join('/logs', 'api_info.log'),
+            'class': 'concurrent_log_handler.ConcurrentRotatingFileHandler',
+            'filename': os.path.join('/logs/{{cookiecutter.project}}', 'api_info.log'),
             'level': 'INFO',
             'formatter': 'lineFormat',
             'delay': True,

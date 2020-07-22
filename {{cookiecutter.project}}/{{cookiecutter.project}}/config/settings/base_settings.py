@@ -142,7 +142,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_RENDERER_CLASSES': (
         # 'rest_framework.renderers.JSONRenderer',
-        '{{cookiecutter.project}}.renderers.JSONRenderer'
+        '{{cookiecutter.project}}.renderers.JSONRenderer', 
     ),
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
     'DEFAULT_AUTHENTICATION_CLASSES': (
