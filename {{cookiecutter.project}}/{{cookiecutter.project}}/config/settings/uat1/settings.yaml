@@ -2,12 +2,14 @@ ENV: uat1
 
 DATABASES:
   default:
-    ENGINE: django.db.backends.mysql
+    ENGINE: {{cookiecutter.project}}.config.db.backends.customer_mysql
     NAME: {{cookiecutter.project}}
     USER: root
     PASSWORD:
     HOST: 127.0.0.1
     PORT: 3306
+    OPTIONS:
+      charset: utf8mb4
 
 
 CELERY_BROKER_URL: amqp://admin:admin@localhost:5672/ci
