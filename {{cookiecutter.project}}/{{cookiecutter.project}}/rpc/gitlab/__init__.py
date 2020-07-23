@@ -5,7 +5,7 @@ from requests.exceptions import RequestException
 
 from {{cookiecutter.project}} import exception
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 gitlab_url = 'http://code.corp.rs.com'
 
