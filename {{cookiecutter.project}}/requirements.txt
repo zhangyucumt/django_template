@@ -6,7 +6,7 @@ django-cors-headers==3.0.2
 django-celery-beat==1.5.0  # https://github.com/celery/django-celery-beat
 django-celery-results==1.1.2
 django-rest-swagger==2.2.0
-django-filter==2.2.0
+django-filter==2.4.0
 django-oauth-toolkit==1.2.0
 
 pytz==2019.1
