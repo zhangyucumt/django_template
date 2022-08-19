@@ -1,0 +1,82 @@
+version: "3.3"
+services:
+  mysql:
+    image: mysql:8.0.30
+    environment:
+      - MYSQL_DATABASE={{cookiecutter.project}}
+      - MYSQL_ROOT_PASSWORD=123456
+      - TZ=Asia/Shanghai
+    restart: always
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql_db:/var/lib/mysql
+
+  migrate:
+    build: .
+    image: backend
+    environment:
+      - APP_ENV=prd
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    restart: on-failure
+    entrypoint: python3 manage.py migrate
+
+  crate_cache_table:
+    image: backend
+    environment:
+      - APP_ENV=prd
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    restart: on-failure
+    entrypoint: python3 manage.py createcachetable
+
+  collect_static:
+    image: backend
+    environment:
+      - APP_ENV=prd
+    volumes:
+      - static_file:/data/static
+    depends_on:
+      - migrate
+    restart: on-failure
+    entrypoint: python3 manage.py collectstatic --noinput
+
+  backend:
+    image: backend
+    restart: always
+    volumes:
+      - media_file:/data/media
+      - static_file:/data/static
+    environment:
+      - APP_ENV=prd
+    depends_on:
+      - mysql
+      - migrate
+    links:
+      - mysql
+
+  nginx:
+    image: nginx:1.21.6
+    ports:
+      - "{{cookiecutter.port}}:{{cookiecutter.port}}"
+    volumes:
+      - static_file:/data/static
+      - media_file:/data/media
+      - ./docker/web.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend
+      - collect_static
+    links:
+      - backend
+    restart: always
+
+volumes:
+  mysql_db: {}
+  static_file: {}
+  media_file: {}

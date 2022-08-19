@@ -1,24 +1,18 @@
-import os
-import re
-from collections import defaultdict
-from django.conf import settings
-from Crypto.Cipher import AES
 import base64
+import hashlib
+import importlib
+import inspect
 import json
+import os
+import pkgutil
+import random
+from collections import defaultdict
 from datetime import datetime, date
 from decimal import Decimal
 from uuid import uuid4
-import random
-import importlib
-import pkgutil
-import inspect
-import time
-import arrow
-import hashlib
 
-from django.utils import six
+from Crypto.Cipher import AES
 from django.conf import settings
-from django.utils import timezone
 
 
 def update_config_recursively(old_data, new_data):
@@ -144,19 +138,6 @@ def obj_scanner(pkg, _filter, obj_type=inspect.isclass, depth=None):
         }
         objs.update(obj_in_module)
     return objs
-
-
-def timestamp2datetime(timestamp):
-    if isinstance(timestamp, six.string_types):
-        if re.match(r'/^[\d]+$/', timestamp):
-            timestamp = int(timestamp)
-    elif not isinstance(timestamp, six.integer_types):
-        return None
-
-    if timestamp > 100000000000:
-        timestamp = int(timestamp / 1000)
-
-    return arrow.get(timestamp).to(settings.TIME_ZONE).datetime
 
 
 def simple_md5_sign(data, secret_key):

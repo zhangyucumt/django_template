@@ -19,12 +19,6 @@ def get_current_request():
     return getattr(local, 'request', None)
 
 
-def get_current_user():
-    request = get_current_request()
-    if request:
-        return getattr(request, 'user', None)
-
-
 class LoggingMiddleware(MiddlewareMixin):
     """
     记录请求log

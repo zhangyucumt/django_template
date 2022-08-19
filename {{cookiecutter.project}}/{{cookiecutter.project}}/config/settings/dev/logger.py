@@ -4,6 +4,9 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
+        'jsonFormat': {
+            '()': '{{cookiecutter.project}}.utils.log.JsonLogFormatter'
+        },
         'lineFormat': {
             '()': '{{cookiecutter.project}}.utils.log.RedStarLogFormatter'
         }
@@ -21,19 +24,15 @@ LOGGING = {
         }
     },
     'loggers': {
-        '': {
-            "level": "INFO",
-            "handlers": ['default'],
-            "propagate": False
-        },
         'django': {
             'handlers': ['null'],
+            'propagate': True,
             'level': 'INFO',
-            'propagate': False,
         },
+        '{{cookiecutter.project}}': {
+            "level": "DEBUG",
+            "handlers": ['default'],
+            "propagate": False
+        }
     }
 }
-
-
-
-
