@@ -1,4 +1,4 @@
-import os
+import importlib
 import yaml
 from {{cookiecutter.project}}.config.settings.base_settings import *
 from {{cookiecutter.project}}.utils import update_config_recursively
@@ -40,9 +40,5 @@ load_env_settings(current_env)
 
 print("loading %s" % current_env)
 
-if current_env == 'dev':
-    from {{cookiecutter.project}}.config.settings.dev.logger import *
-elif current_env == 'uat1':
-    from {{cookiecutter.project}}.config.settings.uat1.logger import *
-elif current_env == 'prd':
-    from {{cookiecutter.project}}.config.settings.prd.logger import *
+importlib.import_module("{{cookiecutter.project}}.config.settings.%s.logger" % current_env)
+

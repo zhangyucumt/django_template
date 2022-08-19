@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-from kombu import Queue, Exchange
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -39,13 +38,10 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'django_celery_results',
     'corsheaders',
     "rest_framework",
-    "django_celery_beat",
-    "rest_framework_swagger",
     "django_filters",
-    # "oauth2_provider"
+    'drf_yasg',
 ]
 
 LOCAL_APPS = [
@@ -142,7 +138,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_RENDERER_CLASSES': (
         # 'rest_framework.renderers.JSONRenderer',
-        '{{cookiecutter.project}}.renderers.JSONRenderer', 
+        '{{cookiecutter.project}}.renderers.JSONRenderer',
     ),
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -166,7 +162,6 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle'
     ),
-    'DEFAULT_SCHEMA_CLASS': '{{cookiecutter.project}}.schema.CustomerSchema',
     'DEFAULT_THROTTLE_RATES': {
         'anon': '30/second',
         'user': '30/second'
@@ -199,9 +194,12 @@ DATETIME_FORMAT = 'Y-m-d H:i:s'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/site_static/'
+STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
+
+MEDIA_ROOT = "/data/media"  # NOQA
+STATIC_ROOT = "/data/static"  # NOQA
 
 LOGIN_URL = 'rest_framework:login'
 LOGOUT_URL = 'rest_framework:logout'
@@ -214,42 +212,3 @@ CACHES = {
         'LOCATION': 'cache',
     }
 }
-
-# [oauth2]
-OAUTH2_PROVIDER = {
-    "AUTHORIZATION_CODE_EXPIRE_SECONDS": 300,
-}
-
-# [celery]
-CELERY_TIMEZONE = TIME_ZONE
-# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-broker_url
-CELERY_BROKER_URL = "amqp://admin:admin@localhost:5672/ci"
-# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_backend
-CELERY_RESULT_BACKEND = "django-db"
-# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-accept_content
-CELERY_ACCEPT_CONTENT = ["json"]
-# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-task_serializer
-CELERY_TASK_SERIALIZER = "json"
-# http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_serializer
-CELERY_RESULT_SERIALIZER = "json"
-# http://docs.celeryproject.org/en/latest/userguide/configuration.html#beat-scheduler
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 28800}
-
-# QUEUE related
-CELERY_QUEUES = [
-    # Queue('default', exchange=Exchange('default', type='direct'), routing_key='default'),
-    Queue('{{cookiecutter.project}}', exchange=Exchange('topic', type='topic'), routing_key='{{cookiecutter.project}}.#'),
-]
-CELERY_TASK_DEFAULT_QUEUE = '{{cookiecutter.project}}'
-CELERY_TASK_DEFAULT_EXCHANGE = 'topic'
-CELERY_TASK_DEFAULT_EXCHANGE_TYPE = 'topic'
-CELERY_TASK_DEFAULT_ROUTING_KEY = '{{cookiecutter.project}}.#'
-
-
-# task route
-def route_task(name, *args, **kwargs):
-    return {'exchange': 'topic', 'exchange_type': 'topic', 'routing_key': '{{cookiecutter.project}}.default'}
-
-
-CELERY_ROUTES = route_task

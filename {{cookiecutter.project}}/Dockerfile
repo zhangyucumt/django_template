@@ -1,18 +1,15 @@
-FROM python-37-centos7:2
+FROM registry.cn-shanghai.aliyuncs.com/zhangyucumt/python:3.8-bullseye
 
-ENV LOG_LEVEL info
-ENV APP_ENV dev
-ENV MODE api
-ENV QUEUE {{cookiecutter.project}}
+ENV APP_ENV prd
 ENV DJANGO_SETTINGS_MODULE {{cookiecutter.project}}.config.settings
 
-ADD requirements.txt /usr/src/{{cookiecutter.project}}/
-WORKDIR /usr/src/{{cookiecutter.project}}/
+ADD requirements.txt /srv/
+WORKDIR /srv/
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-COPY . /usr/src/{{cookiecutter.project}}/
+COPY . /srv/
 
-COPY bin/run.sh /
-RUN chmod 0755 /*.sh
-CMD ["/run.sh"]
+EXPOSE {{cookiecutter.port}}
+
+CMD ["sh", "-c", "gunicorn {{cookiecutter.project}}.config.wsgi -b 0.0.0.0:{{cookiecutter.port}} -w 10 -t 50 --log-level info --max-requests 200 --keep-alive 30"]

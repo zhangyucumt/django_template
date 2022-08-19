@@ -5,16 +5,10 @@ DATABASES:
     ENGINE: {{cookiecutter.project}}.config.db.backends.customer_mysql
     NAME: {{cookiecutter.project}}
     USER: root
-    PASSWORD: MyNewPass4!
-    HOST: localhost
+    PASSWORD: "123456"
+    HOST: mysql
     PORT: 3306
     OPTIONS:
       charset: utf8mb4
-
-
-CELERY_BROKER_URL: amqp://admin:admin@localhost:5672/ci
-
-MEDIA_ROOT: /data/upload
-STATIC_ROOT: /data/web/{{cookiecutter.project}}_static
 
 DEBUG: false
