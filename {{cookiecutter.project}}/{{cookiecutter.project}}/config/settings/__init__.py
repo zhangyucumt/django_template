@@ -40,5 +40,6 @@ load_env_settings(current_env)
 
 print("loading %s" % current_env)
 
-importlib.import_module("{{cookiecutter.project}}.config.settings.%s.logger" % current_env)
+ret = importlib.import_module("{{cookiecutter.project}}.config.settings.%s.logger" % current_env)
+LOGGING = ret.LOGGING
 
