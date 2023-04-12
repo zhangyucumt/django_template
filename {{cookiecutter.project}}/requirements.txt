@@ -1,5 +1,5 @@
-Django==3.1
-djangorestframework==3.12  # https://github.com/encode/django-rest-framework
+Django==3.2
+djangorestframework==3.14.0  # https://github.com/encode/django-rest-framework
 django-cors-headers==3.11.0
 drf-yasg==1.21.3
 django-filter==21.1
